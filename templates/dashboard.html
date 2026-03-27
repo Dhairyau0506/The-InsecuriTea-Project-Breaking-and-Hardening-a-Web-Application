@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>InsecuriTea | Dashboard</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #f3efe9, #e6dfd6);
+    margin: 0;
+}
+
+/* Centering */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Card */
+.card {
+    width: 460px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.header h1 {
+    margin: 0;
+    color: #2d2d2d;
+}
+
+/* Divider */
+hr {
+    border: none;
+    height: 1px;
+    background: #ddd;
+    margin: 15px 0;
+}
+
+/* Info rows */
+.info {
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+.label {
+    font-weight: bold;
+    color: #444;
+}
+
+/* Notes box */
+.notes {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f7f7f7;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Logout button */
+.logout {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background: #6f4e37;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.logout:hover {
+    background: #5a3e2b;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+
+    <div class="header">
+        <h1>☕ InsecuriTea</h1>
+    </div>
+
+    <hr>
+
+    <div class="info"><span class="label">User:</span> {{ username | safe }}</div>
+    <div class="info"><span class="label">Tea Type:</span> {{ tea_type | safe }}</div>
+    <div class="info"><span class="label">Sugar:</span> {{ sugar | safe }}</div>
+    <div class="info"><span class="label">Extras:</span> {{ extras | safe }}</div>
+
+    <div class="info">
+        <span class="label">Extra Notes:</span>
+        <div class="notes">
+            {{ notes | safe }}
+        </div>
+    </div>
+
+    <a href="/attack" class="logout">⚠️ Hacker Playground</a>
+	<a href="/" class="logout">Logout</a>
+
+</div>
+
+
+</div>
+
+</body>
+</html>

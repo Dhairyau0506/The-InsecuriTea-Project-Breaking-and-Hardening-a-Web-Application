@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f3efe9;
+        }
+
+        .card {
+            width: 450px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #6f4e37;
+            text-align: center;
+        }
+
+        .info {
+            margin: 10px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #6f4e37;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .btn-danger {
+            background: #c0392b;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>☕ User Details</h1>
+    <hr>
+
+    <div class="info"><span class="label">Username:</span> {{ username | safe }}</div>
+    <div class="info"><span class="label">Tea Type:</span> {{ tea_type | safe }}</div>
+    <div class="info"><span class="label">Sugar:</span> {{ sugar | safe }}</div>
+    <div class="info"><span class="label">Extras:</span> {{ extras | safe }}</div>
+    <div class="info"><span class="label">Notes:</span> {{ notes | safe }}</div>
+
+    <a class="btn btn-danger" href="/delete_user?id={{ user_id }}">
+        Delete User
+    </a>
+
+    <br><br>
+
+    <a class="btn" href="/admin?username=admin">Back</a>
+</div>
+
+</body>
+</html>

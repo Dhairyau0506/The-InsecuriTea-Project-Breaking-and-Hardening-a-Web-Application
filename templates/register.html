@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>InsecuriTea | Register</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #f3efe9, #e6dfd6);
+    margin: 0;
+}
+
+/* Centering */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Card */
+.card {
+    width: 420px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* Title */
+h1 {
+    text-align: center;
+    color: #2d2d2d;
+    margin-bottom: 5px;
+}
+
+/* Subtitle */
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Section labels */
+.section-title {
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+/* Focus effect */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #6f4e37;
+    box-shadow: 0 0 6px rgba(111, 78, 55, 0.3);
+}
+
+/* Radio & checkbox groups */
+.option-group {
+    margin: 5px 0;
+}
+
+.option-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #6f4e37;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #5a3e2b;
+}
+
+/* Link */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #6f4e37;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+
+    <h1>☕ InsecuriTea</h1>
+    <p class="subtitle">How do you like your tea?</p>
+
+    <form action="/register" method="post">
+
+        <!-- Username & Password -->
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <!-- Tea Type -->
+        <div class="section-title">Tea Type</div>
+        <div class="option-group">
+            <label><input type="radio" name="tea_type" value="Masala Chai"> Masala Chai</label>
+            <label><input type="radio" name="tea_type" value="Green Tea"> Green Tea</label>
+            <label><input type="radio" name="tea_type" value="Black Tea"> Black Tea</label>
+        </div>
+
+        <!-- Sugar -->
+        <div class="section-title">Sugar Level</div>
+        <select name="sugar">
+            <option>No Sugar</option>
+            <option>Less Sugar</option>
+            <option>Normal Sugar</option>
+            <option>Extra Sugar</option>
+        </select>
+
+        <!-- Extras -->
+        <div class="section-title">Extras</div>
+        <div class="option-group">
+            <label><input type="checkbox" name="extras" value="Milk"> Milk</label>
+            <label><input type="checkbox" name="extras" value="Ginger"> Ginger</label>
+            <label><input type="checkbox" name="extras" value="Honey"> Honey</label>
+            <label><input type="checkbox" name="extras" value="Lemon"> Lemon</label>
+        </div>
+
+        <!-- Notes -->
+        <div class="section-title">Extra Notes (optional)</div>
+        <textarea name="notes" rows="4" placeholder="Any special tea preferences?"></textarea>
+
+        <!-- Submit -->
+        <button type="submit">Register</button>
+    </form>
+
+    <a href="/">Back to Login</a>
+
+</div>
+
+
+</div>
+
+</body>
+</html>

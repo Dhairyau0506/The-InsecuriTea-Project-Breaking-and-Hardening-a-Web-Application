@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f3efe9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #6f4e37;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            width: 220px;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .username {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #6f4e37;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #5a3f2c;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>☕ Admin Panel</h1>
+
+<div class="container">
+    {% for user in users %}
+        <div class="card">
+            <div class="username">{{ user[1] }}</div>
+
+            <a class="btn" href="/admin/user?id={{ user[0] }}&username=admin">
+                View Details
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
