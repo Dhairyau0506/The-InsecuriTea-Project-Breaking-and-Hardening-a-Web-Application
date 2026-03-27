@@ -73,7 +73,7 @@ Scenario - Stored XSS used for privilege escalation via session hijacking:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/Dhairyau0506/The-InsecuriTea-Project-Breaking-and-Hardening-a-Web-Application.git
+git clone https://github.com/dhairya-techsec/The-InsecuriTea-Project-Breaking-and-Hardening-a-Web-Application.git
 ```
 
 2. Navigate into the project folder
