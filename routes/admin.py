@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, current_app, session
 import sqlite3
 
 admin = Blueprint("admin", __name__)
@@ -6,45 +6,67 @@ admin = Blueprint("admin", __name__)
 DB_NAME = "users.db"
 
 
-# ---------------- ADMIN LIST (tiles)
+# ---------------- ADMIN LIST ----------------
 @admin.route("/admin")
 def admin_panel():
-    username = request.args.get("username", "")
+    mode = current_app.config["MODE"]
 
-    # ❌ Weak auth (intentional)
-    if username != "admin":
-        return "Access denied"
+    if mode == "insecure":
+        # ❌ Weak auth (URL based)
+        username = request.args.get("username", "")
+        if username != "admin":
+            return "Access denied"
+    else:
+        # ✅ Secure auth (session based)
+        if session.get("username") != "admin":
+            return redirect("/")
 
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Only fetch id + username (clean UI)
     cursor.execute("SELECT id, username FROM users")
     users = cursor.fetchall()
 
     conn.close()
 
-    return render_template("admin.html", users=users)
+    return render_template("admin.html", users=users, mode=mode)
 
 
-# ---------------- USER DETAIL PAGE (XSS triggers here)
+# ---------------- USER DETAIL ----------------
 @admin.route("/admin/user")
 def admin_user_detail():
-    username = request.args.get("username", "")
+    mode = current_app.config["MODE"]
+
     user_id = request.args.get("id", "")
 
-    # ❌ Weak auth
-    if username != "admin":
-        return "Access denied"
+    if mode == "insecure":
+        # ❌ Weak auth
+        username = request.args.get("username", "")
+        if username != "admin":
+            return "Access denied"
 
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
+        # ❌ SQLi vulnerable
+        query = "SELECT username, tea_type, sugar, extras, notes FROM users WHERE id = " + user_id
 
-    # ❌ IDOR + SQLi
-    query = "SELECT username, tea_type, sugar, extras, notes FROM users WHERE id = " + user_id
-    cursor.execute(query)
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute(query)
+
+    else:
+        # ✅ Secure auth
+        if session.get("username") != "admin":
+            return redirect("/")
+
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+
+        # ✅ Parameterized query (no SQLi)
+        cursor.execute(
+            "SELECT username, tea_type, sugar, extras, notes FROM users WHERE id=?",
+            (user_id,),
+        )
+
     user = cursor.fetchone()
-
     conn.close()
 
     if not user:
@@ -57,21 +79,38 @@ def admin_user_detail():
         tea_type=user[1],
         sugar=user[2],
         extras=user[3],
-        notes=user[4]
+        notes=user[4],
+        mode=mode
     )
 
 
-# ---------------- DELETE USER
+# ---------------- DELETE USER ----------------
 @admin.route("/delete_user")
 def delete_user():
+    mode = current_app.config["MODE"]
     user_id = request.args.get("id")
 
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # ❌ SQLi + no auth
-    cursor.execute("DELETE FROM users WHERE id = " + user_id)
+    if mode == "insecure":
+        # ❌ No auth + SQLi
+        cursor.execute("DELETE FROM users WHERE id = " + user_id)
+
+    else:
+    # ✅ Secure mode
+        if session.get("username") != "admin":
+            return redirect("/")
+
+        # 🚫 Prevent admin deleting itself
+        current_user = session.get("user_id")
+
+        if str(user_id) == str(current_user):
+            return "❌ You cannot delete your own admin account!"
+
+    cursor.execute("DELETE FROM users WHERE id=?", (user_id,))
+
     conn.commit()
     conn.close()
 
-    return redirect("/admin?username=admin")
+    return redirect("/admin" + ("?username=admin" if mode == "insecure" else ""))

@@ -43,6 +43,12 @@ body {
     color: #2d2d2d;
 }
 
+/* Mode badge */
+.mode {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
 /* Divider */
 hr {
     border: none;
@@ -71,11 +77,11 @@ hr {
     font-size: 14px;
 }
 
-/* Logout button */
-.logout {
+/* Buttons */
+.btn {
     display: block;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 12px;
     padding: 10px;
     background: #6f4e37;
     color: white;
@@ -85,7 +91,7 @@ hr {
     transition: 0.2s;
 }
 
-.logout:hover {
+.btn:hover {
     background: #5a3e2b;
 }
 </style>
@@ -97,31 +103,88 @@ hr {
 <div class="container">
     <div class="card">
 
-
+    <!-- Header -->
     <div class="header">
         <h1>☕ InsecuriTea</h1>
+
+        <!-- 🔐 MODE INDICATOR -->
+        {% if mode == "insecure" %}
+            <div class="mode" style="color:red;">INSECURE MODE</div>
+        {% else %}
+            <div class="mode" style="color:green;">SECURE MODE</div>
+        {% endif %}
     </div>
 
     <hr>
 
-    <div class="info"><span class="label">User:</span> {{ username | safe }}</div>
-    <div class="info"><span class="label">Tea Type:</span> {{ tea_type | safe }}</div>
-    <div class="info"><span class="label">Sugar:</span> {{ sugar | safe }}</div>
-    <div class="info"><span class="label">Extras:</span> {{ extras | safe }}</div>
+    <!-- USER -->
+    <div class="info">
+        <span class="label">User:</span>
+        {% if mode == "insecure" %}
+            {{ username | safe }}
+        {% else %}
+            {{ username }}
+        {% endif %}
+    </div>
 
+    <!-- TEA TYPE -->
+    <div class="info">
+        <span class="label">Tea Type:</span>
+        {% if mode == "insecure" %}
+            {{ tea_type | safe }}
+        {% else %}
+            {{ tea_type }}
+        {% endif %}
+    </div>
+
+    <!-- SUGAR -->
+    <div class="info">
+        <span class="label">Sugar:</span>
+        {% if mode == "insecure" %}
+            {{ sugar | safe }}
+        {% else %}
+            {{ sugar }}
+        {% endif %}
+    </div>
+
+    <!-- EXTRAS -->
+    <div class="info">
+        <span class="label">Extras:</span>
+        {% if mode == "insecure" %}
+            {{ extras | safe }}
+        {% else %}
+            {{ extras }}
+        {% endif %}
+    </div>
+
+    <!-- NOTES -->
     <div class="info">
         <span class="label">Extra Notes:</span>
         <div class="notes">
-            {{ notes | safe }}
+            {% if mode == "insecure" %}
+                {{ notes | safe }}
+            {% else %}
+                {{ notes }}
+            {% endif %}
         </div>
     </div>
 
-    <a href="/attack" class="logout">⚠️ Hacker Playground</a>
-	<a href="/" class="logout">Logout</a>
+    <!-- 🔘 TOGGLE BUTTON -->
+    <a href="/toggle" class="btn">Switch Mode</a>
+	
+	{% if username == "admin" and mode == "secure" %}
+		<a href="/admin" class="btn">Go to Admin Panel</a>
+	{% endif %}
+
+    <!-- ⚠️ Hacker Playground (ONLY IN INSECURE MODE) -->
+    {% if mode == "insecure" %}
+        <a href="/attack" class="btn">Hacker Playground</a>
+    {% endif %}
+
+    <!-- LOGOUT -->
+    <a href="/logout" class="btn">Logout</a>
 
 </div>
-
-
 </div>
 
 </body>

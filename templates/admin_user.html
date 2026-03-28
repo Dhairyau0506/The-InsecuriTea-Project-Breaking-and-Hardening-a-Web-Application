@@ -64,9 +64,13 @@
     <div class="info"><span class="label">Extras:</span> {{ extras | safe }}</div>
     <div class="info"><span class="label">Notes:</span> {{ notes | safe }}</div>
 
+    {% if username != "admin" %}
     <a class="btn btn-danger" href="/delete_user?id={{ user_id }}">
         Delete User
     </a>
+	{% else %}
+		<p style="color:red; font-weight:bold;">🚫 Admin account cannot be deleted</p>
+	{% endif %}
 
     <br><br>
 

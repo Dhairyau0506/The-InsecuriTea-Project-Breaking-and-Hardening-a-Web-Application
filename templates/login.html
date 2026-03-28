@@ -2,6 +2,11 @@
 
 <html>
 <head>
+<script>
+    if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload();
+    }
+</script>
 <title>InsecuriTea | Login</title>
 
 <style>
@@ -43,7 +48,13 @@ h2 {
 .tagline {
     font-size: 14px;
     color: #777;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+/* Mode Indicator */
+.mode {
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 /* Inputs */
@@ -83,10 +94,10 @@ button:hover {
     background: #5a3e2b;
 }
 
-/* Link */
+/* Links */
 a {
     display: inline-block;
-    margin-top: 15px;
+    margin-top: 12px;
     color: #6f4e37;
     text-decoration: none;
     font-size: 14px;
@@ -94,6 +105,21 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* Switch Button */
+.switch-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background: #333;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.switch-btn:hover {
+    background: #111;
 }
 </style>
 
@@ -103,18 +129,31 @@ a:hover {
 
 <div class="container">
     <div class="card">
+
         <h2>☕ InsecuriTea</h2>
         <p class="tagline">Learn security by breaking it.</p>
 
-    <form action="/login" method="get">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
+        <!-- 🔐 MODE INDICATOR -->
+        {% if mode == "insecure" %}
+            <div class="mode" style="color:red;">INSECURE MODE</div>
+        {% else %}
+            <div class="mode" style="color:green;">SECURE MODE</div>
+        {% endif %}
 
-    <a href="/register">Create an account</a>
-</div>
+        <!-- LOGIN FORM -->
+        <form action="/login" method="get">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
 
+        <!-- 🔄 SWITCH MODE BUTTON -->
+        <a href="/toggle" class="switch-btn">Switch Mode</a>
+
+        <!-- REGISTER -->
+        <a href="/register">Create an account</a>
+
+    </div>
 </div>
 
 </body>

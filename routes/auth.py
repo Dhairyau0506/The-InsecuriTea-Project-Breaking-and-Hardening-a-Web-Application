@@ -1,9 +1,10 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, current_app, session
 from db import get_db
 
 auth = Blueprint("auth", __name__)
 
 
+# ---------------- LOGIN ----------------
 @auth.route("/login", methods=["GET"])
 def login():
     username = request.args.get("username", "")
@@ -12,22 +13,42 @@ def login():
     conn = get_db()
     cursor = conn.cursor()
 
-    query = (
-        "SELECT id FROM users WHERE username = '"
-        + username
-        + "' AND password = '"
-        + password
-        + "'"
-    )
-    cursor.execute(query)
+    mode = current_app.config["MODE"]
+
+    if mode == "insecure":
+        # ❌ Vulnerable to SQL Injection
+        query = (
+            "SELECT id, username FROM users WHERE username = '"
+            + username
+            + "' AND password = '"
+            + password
+            + "'"
+        )
+        cursor.execute(query)
+
+    else:
+        # ✅ Secure (Parameterized Query)
+        cursor.execute(
+            "SELECT id, username FROM users WHERE username=? AND password=?",
+            (username, password),
+        )
+
     user = cursor.fetchone()
     conn.close()
 
     if user:
-        return redirect("/dashboard?user_id=" + str(user[0]))
+        if mode == "secure":
+            # ✅ Store session (for IDOR + auth protection later)
+            session["user_id"] = user[0]
+            session["username"] = user[1]
+            return redirect("/dashboard")
+        else:
+            return redirect("/dashboard?user_id=" + str(user[0]))
+
     return "Login failed"
 
 
+# ---------------- REGISTER ----------------
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -43,6 +64,7 @@ def register():
     conn = get_db()
     cursor = conn.cursor()
 
+    # Keeping insecure for demo (you can later toggle this too if needed)
     query = (
         "INSERT INTO users VALUES (NULL, '"
         + username
@@ -58,8 +80,14 @@ def register():
         + notes
         + "')"
     )
+
     cursor.execute(query)
     conn.commit()
     conn.close()
 
+    return redirect("/")
+    
+@auth.route("/logout")
+def logout():
+    session.clear()   # 🔥 destroys session
     return redirect("/")
