@@ -141,19 +141,176 @@ http://127.0.0.1:5000/admin?username=admin
 
 --------------------------------------------------
 
-**🔐 Phase 2: SecuriTea (Secure Mode – still in development)**
+## 🔐 Phase 2: SecuriTea (Secure Mode)
 
-This mode focuses on fixing all vulnerabilities using secure coding practices.
+SecuriTea is the hardened version of the application, where all previously exploited vulnerabilities are mitigated using secure coding practices. The application supports a **toggle-based mode switch**, allowing users to dynamically switch between insecure (InsecuriTea) and secure (SecuriTea) environments.
 
-**Planned security improvements:**
+---
 
-- Parameterized queries (prevent SQLi)
-- Output escaping (prevent XSS)
-- Proper authentication and authorization (prevent IDOR)
-- Password hashing instead of plaintext storage
-- Input validation and sanitization
+### ✅ Security Improvements Implemented
+
+#### 1. SQL Injection Prevention
+- Replaced dynamic query construction with **parameterized queries**
+- Prevents authentication bypass and database manipulation
+
+**Before (Vulnerable):**
+```python
+"SELECT * FROM users WHERE username = '" + username + "'"
+```
+
+**After (Secure):**
+```python
+cursor.execute(
+    "SELECT id, username FROM users WHERE username=? AND password=?",
+    (username, password)
+)
+```
+
+---
+
+#### 2. Cross-Site Scripting (XSS) Prevention
+- Removed unsafe rendering (`| safe`) in secure mode
+- Ensured all user inputs are properly escaped before rendering
+
+**Impact:**
+- Prevents execution of malicious scripts
+- Protects user sessions and browser integrity
+
+---
+
+#### 3. IDOR (Insecure Direct Object Reference) Fix
+- Removed reliance on `user_id` from URL parameters
+- Implemented **session-based access control**
+
+**Before (Vulnerable):**
+```text
+/dashboard?user_id=1
+```
+
+**After (Secure):**
+- User identity is derived from server-side session
+- Unauthorized access to other users’ data is blocked
+
+---
+
+#### 4. Secure Authentication & Authorization
+- Introduced **session management using Flask sessions**
+- Restricted admin panel access to authenticated admin users only
+
+**Enhancements:**
+- Prevents unauthorized admin access
+- Eliminates URL-based privilege escalation
+
+---
+
+#### 5. Admin Protection Improvements
+- Prevented admin from deleting their own account
+- Enforced strict role-based checks for admin functionality
+
+---
+
+### 🔄 Mode Switching Feature
+
+The application includes a **live toggle system**:
+
+<img width="1372" height="629" alt="image" src="https://github.com/user-attachments/assets/2884a07f-2790-47d5-a15d-dfe3a4621ecc" />
+
+
+- 🔴 Insecure Mode → Demonstrates vulnerabilities  
+- 🟢 Secure Mode → Demonstrates mitigations  
+
+This allows:
+- Side-by-side comparison of attacks vs defenses  
+- Better understanding of real-world exploitation and prevention  
+
+---
+
+### 🎯 Key Takeaway
+
+SecuriTea transforms the application from a vulnerable system into a **secure-by-design implementation**, demonstrating how real-world vulnerabilities can be effectively mitigated using best practices.
+
+This dual-mode architecture makes the project both a **learning tool for attackers** and a **reference for secure development**.
+
 
 --------------------------------------------------
+
+## 👑 Admin Panel & Default Admin Account
+
+The application includes a dedicated **Admin Panel** that allows administrative users to manage and view all registered users in the system.
+
+---
+
+### 🔐 Admin Panel Features
+
+- View all registered users
+- Access detailed user information
+- Delete user accounts (with restrictions)
+- Demonstrate privilege escalation risks (in insecure mode)
+
+---
+
+### 🧑‍💻 Default Admin Account Creation
+
+To simplify testing and ensure consistent access, the application automatically creates an **admin account** during database initialization.
+
+This is handled in the backend when the database is first set up.
+
+**Default Admin Credentials:**
+
+```text
+Username: admin
+Password: admin123
+```
+
+---
+
+### ⚙️ How It Works
+
+- On application startup, the database is initialized  
+- The system checks whether an admin user already exists  
+- If not, it automatically inserts a default admin record  
+
+This ensures:
+- Admin functionality is always accessible  
+- No manual database setup is required  
+
+---
+
+### 🔓 Insecure Mode Behavior
+
+- Admin access is controlled via URL parameter:
+```text
+/admin?username=admin
+```
+- No proper authentication checks  
+- Vulnerable to privilege escalation  
+
+---
+
+### 🔐 Secure Mode Behavior
+
+- Admin access is restricted using **session-based authentication**
+- Only logged-in users with username `admin` can access the panel  
+- Unauthorized users are redirected or denied access  
+
+---
+
+### 🛡️ Security Enhancements
+
+- Prevented admin from deleting their own account  
+- Enforced role-based access control  
+- Eliminated URL-based authentication flaws  
+
+---
+
+### 🎯 Learning Value
+
+This module demonstrates:
+- The risks of improper authentication  
+- The importance of role-based access control  
+- Real-world privilege escalation scenarios and their mitigation
+
+---
 
 **🎯 Learning outcomes:**
 
